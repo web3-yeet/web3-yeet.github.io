@@ -15,7 +15,12 @@ class App extends Component {
       isYou: false,
     };
 
-    window.ethereum.enable();
+    try {
+      window.ethereum.enable();
+    } catch (e) {
+      console.log("no web3 wallet");
+    }
+
     this.wallet = new Wallet();
     this.token  = new ERC20('0x4f38f4229924bfa28d58eeda496cc85e8016bccc');
     this.bag    = '0xff91c94f45e1114b1c90be6d028381964030584c';
