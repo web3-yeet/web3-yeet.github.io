@@ -12,6 +12,7 @@ class App extends Component {
 
     this.state = {
       name: '...',
+      isYou: false,
     };
 
     window.ethereum.enable();
@@ -33,11 +34,21 @@ class App extends Component {
     this.wallet.sendEther(this.bag, 0.024);  
   }
   
-  sign = () => {
-    this.wallet.signMessage("this message");  
+  sign = async () => {
+    const signature = await this.wallet.signMessage("this message");  
+    this.setState({signature: signature})
+  }
+
+  check = async () => {
+    const isYou = await this.wallet.checkMessage("this message", this.state.signature);  
+    this.setState({isYou: isYou});
   }
 
   render() {
+    const verifyText = !this.state.isYou 
+    ? {emoji: `🔍`, text: `Verify it was you`}
+    : {emoji: `🛂 `, text: `Yep, it was you`};
+
     return (
       <div className="App">
         <header className="App-header">
@@ -51,21 +62,33 @@ class App extends Component {
               color="primary"
               block
             >
+              <span className="float-left">{`🐕`}</span>
               {`Send some ${this.state.name}?`}
             </Button>
             <Button
               onClick={this.sendEth}
-              color="info"
+              color="success"
               block
             >
+              <span className="float-left">{`🍻`}</span>
               {`Send some ether?`}
             </Button>
             <Button
               onClick={this.sign}
-              color="success"
+              color="danger"
               block
             >
+              <span className="float-left mr-2">{`✍️`}</span>
               {`Sign "this message"!`}
+            </Button>
+            <Button
+              onClick={this.check}
+              color="warning"
+              disabled={this.state.signature === undefined}
+              block
+            >
+              <span className="float-left mr-1">{verifyText.emoji}</span>
+              {verifyText.text}
             </Button>
           </p>
         </header>
