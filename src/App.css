@@ -3,8 +3,8 @@
 }
 
 .App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 40vmin;
+  animation: bounce infinite 0.4s linear;
+  height: 30vmin;
 }
 
 .App-header {
@@ -18,15 +18,23 @@
   color: white;
 }
 
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
+@keyframes bounce {
+  0% {
+    transform: translate3d(0px, 0px, 0);
   }
-  to {
-    transform: rotate(360deg);
+  20% {
+    transform: translate3d(2px, 1px, 0);
+  }
+  40% {
+    transform: translate3d(0px, -2px, 0);
+  }
+  60% {
+    transform: translate3d(-6px, 1px, 0);
+  }
+  80% {
+    transform: translate3d(-2px, 3px, 0);
+  }
+  100% {
+    transform: translate3d(0px, 0px, 0);
   }
 }
