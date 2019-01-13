@@ -133,7 +133,7 @@ const ActionButton = (props) => (
     disabled={props.disabled}
     block
   >
-    <span className="float-left mr-1">{props.emoji}</span>
+    <span className="float-left mr-3">{props.emoji}</span>
     <span>{props.text}</span>
   </Button>
 );
