@@ -9,8 +9,9 @@
     "react": "^16.7.0",
     "react-dom": "^16.7.0",
     "react-scripts": "2.1.3",
+    "react-typist": "^2.0.5",
     "reactstrap": "^7.0.2",
-    "web3-yeet": "^0.3.12-0"
+    "web3-yeet": "^0.3.14"
   },
   "scripts": {
     "start": "react-scripts start",

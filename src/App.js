@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Button } from 'reactstrap';
+import Typist from 'react-typist';
 
 import { ERC20, Wallet } from 'web3-yeet';
 
@@ -11,7 +12,6 @@ class App extends Component {
     super(props);
 
     this.state = {
-      name: '...',
       isYou: false,
     };
 
@@ -29,10 +29,13 @@ class App extends Component {
   async componentDidMount(){
     const name = await this.token.getSymbol();
     this.setState({name: name});
+    
+    const decimalFactor = await this.token.getDecimalFactor().catch(console.error);
+    console.log(decimalFactor)
   }
 
   sendCehh = () => {
-    this.wallet.sendERC20(this.bag, 42, this.token);  
+    this.wallet.sendERC20(this.bag, 20, this.token);  
   }
   
   sendEth = () => {
@@ -57,18 +60,39 @@ class App extends Component {
     return (
       <div className="App">
         <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Web3-YEET
-          </p>
-          <p>
+          <span className="outer-logo">
+            <img src={logo} className="App-logo" alt="logo" />
+          </span>
+            <span className="title mt-3">
+              Web3-YEET
+            </span>
+          <p className="buttons">
             <Button
               onClick={this.sendCehh}
               color="primary"
               block
             >
               <span className="float-left">{`🐕`}</span>
-              {`Send some ${this.state.name}?`}
+              <span>
+                {`Send some`}
+                <Typist
+                  className="d-inline"
+                  startDelay={2000}
+                  cursor={{hideWhenDone: true, hideWhenDoneDelay: 0, blink: true}}
+                  avgTypingSpeed={10}
+                  onTypingDone={() => this.setState({done: true})}
+                >
+                  {`...`}
+                  <Typist.Backspace count={3} delay={200}/>
+                </Typist>
+                { this.state.name && this.state.done
+                  ? (<Typist className="d-inline" startDelay={1200} cursor={{hideWhenDone: true}} avgTypingSpeed={10}>
+                      {` ${this.state.name}`}
+                      <Typist.Delay ms={1000} />
+                      {`?`}
+                    </Typist>)
+                  : this.state.done ? (`...`) : null }
+              </span>
             </Button>
             <Button
               onClick={this.sendEth}
@@ -76,7 +100,7 @@ class App extends Component {
               block
             >
               <span className="float-left">{`🍻`}</span>
-              {`Send some ether?`}
+              <span>{`Send some ether?`}</span>
             </Button>
             <Button
               onClick={this.sign}
@@ -84,7 +108,7 @@ class App extends Component {
               block
             >
               <span className="float-left mr-2">{`✍️`}</span>
-              {`Sign "this message"!`}
+              <span>{`Sign "this message"!`}</span>
             </Button>
             <Button
               onClick={this.check}
@@ -93,7 +117,7 @@ class App extends Component {
               block
             >
               <span className="float-left mr-1">{verifyText.emoji}</span>
-              {verifyText.text}
+              <span>{verifyText.text}</span>
             </Button>
           </p>
         </header>

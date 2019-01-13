@@ -1,10 +1,25 @@
+@import url('https://fonts.googleapis.com/css?family=Oregano:400i');
+
+.title {
+  font-family: 'Oregano', cursive;
+}
+
+.buttons {
+  padding: 10px;
+  border: solid white 1px;
+}
+
 .App {
   text-align: center;
 }
 
 .App-logo {
-  animation: bounce infinite 0.4s linear;
+  animation: bounce infinite 1s ease-out;
   height: 30vmin;
+}
+
+.outer-logo {
+  animation: outer-bounce infinite 2s linear;
 }
 
 .App-header {
@@ -14,7 +29,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
+  font-size: calc(40px + 2vmin);
   color: white;
 }
 
@@ -26,13 +41,28 @@
     transform: translate3d(2px, 1px, 0);
   }
   40% {
-    transform: translate3d(0px, -2px, 0);
+    transform: translate3d(1px, -2px, 0);
   }
   60% {
-    transform: translate3d(-6px, 1px, 0);
+    transform: translate3d(2px, 1px, 0);
   }
   80% {
-    transform: translate3d(-2px, 3px, 0);
+    transform: translate3d(-2px, 2px, 0);
+  }
+  90% {
+    transform: translate3d(0px, -1px, 0);
+  }
+  100% {
+    transform: translate3d(0px, 0px, 0);
+  }
+}
+
+@keyframes outer-bounce {
+  0% {
+    transform: translate3d(0px, 0px, 0);
+  }
+  30% {
+    transform: translate3d(6px, -6px, 0);
   }
   100% {
     transform: translate3d(0px, 0px, 0);
