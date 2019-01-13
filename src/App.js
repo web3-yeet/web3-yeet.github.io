@@ -1,10 +1,13 @@
 import React, { Component } from 'react';
 import { Button } from 'reactstrap';
+import { ToastContainer, toast } from 'react-toastify';
 import Typist from 'react-typist';
+import Ribbon from './Ribbon.js';
 
 import { ERC20, Wallet } from 'web3-yeet';
 
 import logo from './logo.png';
+import 'react-toastify/dist/ReactToastify.css'
 import './App.css';
 
 class App extends Component {
@@ -35,11 +38,13 @@ class App extends Component {
   }
 
   sendCehh = () => {
-    this.wallet.sendERC20(this.bag, 20, this.token);  
+    this.wallet.sendERC20(this.bag, 20, this.token)
+      .catch(e => toast.error(`${e.message}`));  
   }
   
   sendEth = () => {
-    this.wallet.sendEther(this.bag, 0.024);  
+    this.wallet.sendEther(this.bag, 0.024)
+      .catch(e => toast.error(`${e.message}`));  
   }
   
   sign = async () => {
@@ -59,14 +64,17 @@ class App extends Component {
 
     return (
       <div className="App">
+        <Ribbon/>
         <header className="App-header">
           <span className="outer-logo">
             <img src={logo} className="App-logo" alt="logo" />
           </span>
             <span className="title mt-3">
-              Web3-YEET
+              <span>
+                Web3-YEET
+              </span>
             </span>
-          <p className="buttons">
+          <span className="buttons">
             <Button
               onClick={this.sendCehh}
               color="primary"
@@ -94,36 +102,40 @@ class App extends Component {
                   : this.state.done ? (`...`) : null }
               </span>
             </Button>
-            <Button
-              onClick={this.sendEth}
-              color="success"
-              block
-            >
-              <span className="float-left">{`🍻`}</span>
-              <span>{`Send some ether?`}</span>
-            </Button>
-            <Button
-              onClick={this.sign}
-              color="danger"
-              block
-            >
-              <span className="float-left mr-2">{`✍️`}</span>
-              <span>{`Sign "this message"!`}</span>
-            </Button>
-            <Button
-              onClick={this.check}
-              color="warning"
+            <ActionButton
+              action={this.sendEth}
+              emoji={`🍻`}
+              text={`Send some ether?`}
+            />
+            <ActionButton
+              action={this.sign}
+              emoji={`✍️`}
+              text={`Sign "this message"!`}
+            />
+            <ActionButton
+              action={this.check}
+              emoji={verifyText.emoji}
+              text={verifyText.text}
               disabled={this.state.signature === undefined}
-              block
-            >
-              <span className="float-left mr-1">{verifyText.emoji}</span>
-              <span>{verifyText.text}</span>
-            </Button>
-          </p>
+            />
+          </span>
         </header>
+        <ToastContainer hideProgressBar={true}/>
       </div>
     );
   }
 }
+
+const ActionButton = (props) => (
+  <Button
+    onClick={props.action}
+    color="primary"
+    disabled={props.disabled}
+    block
+  >
+    <span className="float-left mr-1">{props.emoji}</span>
+    <span>{props.text}</span>
+  </Button>
+);
 
 export default App;
