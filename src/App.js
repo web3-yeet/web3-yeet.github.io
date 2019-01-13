@@ -15,13 +15,14 @@ class App extends Component {
     super(props);
 
     this.state = {
+      isAvailable: false,
       isYou: false,
     };
 
     try {
       window.ethereum.enable();
     } catch (e) {
-      console.log("no web3 wallet");
+      console.log("No MetaMask detected.");
     }
 
     this.wallet = new Wallet();
@@ -30,11 +31,13 @@ class App extends Component {
   }
 
   async componentDidMount(){
+    const isAvailable = await this.wallet.isAvailable();
     const name = await this.token.getSymbol();
-    this.setState({name: name});
     
-    const decimalFactor = await this.token.getDecimalFactor().catch(console.error);
-    console.log(decimalFactor)
+    this.setState({
+      name: name,
+      isAvailable: isAvailable,
+    });
   }
 
   sendCehh = () => {
@@ -48,8 +51,12 @@ class App extends Component {
   }
   
   sign = async () => {
-    const signature = await this.wallet.signMessage("this message");  
-    this.setState({signature: signature})
+    try {
+      const signature = await this.wallet.signMessage("this message");
+      this.setState({signature: signature});
+    } catch (e) {
+      toast.error(`${e.message}`);
+    }
   }
 
   check = async () => {
@@ -58,14 +65,26 @@ class App extends Component {
   }
 
   render() {
+    const statusColor = this.state.isAvailable
+    ? "#88BD38"
+    : "#D0312F";
     const verifyText = !this.state.isYou 
     ? {emoji: `🔍`, text: `Verify it was you`}
-    : {emoji: `🛂 `, text: `Yep, it was you`};
+    : {emoji: `🛂`, text: `Yep, it was you`};
 
     return (
       <div className="App">
         <Ribbon/>
         <header className="App-header">
+          <span style={{
+            position: "absolute",
+            top: "0px",
+            width: "100%",
+            height: "4px",
+            background: statusColor,
+            zIndex: "-1",
+            transition: "background-color 400ms linear",
+          }}/>
           <span className="outer-logo">
             <img src={logo} className="App-logo" alt="logo" />
           </span>
