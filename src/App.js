@@ -41,13 +41,25 @@ class App extends Component {
   }
 
   sendCehh = () => {
-    this.wallet.sendERC20(this.bag, 20, this.token)
-      .catch(e => toast.error(`${e.message}`));  
+    try {
+      this.wallet.sendERC20(this.bag, 20, this.token)
+    } catch (e) {
+      if(/metamask/i.test(e.message))
+        toast.info(`MetaMask request rejected!`);
+      else
+        toast.error(`${e.message}`)
+    }
   }
   
   sendEth = () => {
-    this.wallet.sendEther(this.bag, 0.024)
-      .catch(e => toast.error(`${e.message}`));  
+    try {
+      this.wallet.sendEther(this.bag, 0.024)
+    } catch (e) {
+      if(/metamask/i.test(e.message))
+        toast.info(`MetaMask request rejected!`);
+      else
+        toast.error(`${e.message}`)
+    }
   }
   
   sign = async () => {
@@ -55,7 +67,10 @@ class App extends Component {
       const signature = await this.wallet.signMessage("this message");
       this.setState({signature: signature});
     } catch (e) {
-      toast.error(`${e.message}`);
+      if(/metamask/i.test(e.message))
+        toast.info(`MetaMask request rejected!`);
+      else
+        toast.error(`${e.message}`)
     }
   }
 
