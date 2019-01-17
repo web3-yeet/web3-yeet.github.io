@@ -11087,10 +11087,10 @@ web3-utils@1.0.0-beta.37:
     underscore "1.8.3"
     utf8 "2.1.1"
 
-web3-yeet@^0.3.19:
-  version "0.3.19"
-  resolved "https://registry.yarnpkg.com/web3-yeet/-/web3-yeet-0.3.19.tgz#e613aa03945bbf1c5861e68d393c791d6f3b473c"
-  integrity sha512-5PZ55Z1Ok8PBMb+IcOCAPDjltOU8vRXK9Hg24u9UpD+Qld1jmun43ZCJFR6ACrwbqgjF/VlzpERP/2hw5tbUgw==
+web3-yeet@^0.3.23:
+  version "0.3.23"
+  resolved "https://registry.yarnpkg.com/web3-yeet/-/web3-yeet-0.3.23.tgz#835cb68476e1240fcc3b71f4adcf2a2983b8b97c"
+  integrity sha512-BuXdYg62EBGSMHWF+EsPlQ8IZNmscyzLFnGaHugu+GT/mg3C1TmSwxJkYBibT7jV/ssktb6/024PksgAY9T/bw==
   dependencies:
     "@babel/runtime-corejs2" "^7.2.0"
     "@types/bn.js" "^4.11.3"

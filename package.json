@@ -13,7 +13,7 @@
     "react-toastify": "^4.5.2",
     "react-typist": "^2.0.5",
     "reactstrap": "^7.0.2",
-    "web3-yeet": "^0.3.19"
+    "web3-yeet": "^0.3.23"
   },
   "scripts": {
     "start": "react-scripts start",

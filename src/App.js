@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
-import { Button } from 'reactstrap';
+import React, { Component }      from 'react';
+import { Button }                from 'reactstrap';
 import { ToastContainer, toast } from 'react-toastify';
-import Typist from 'react-typist';
-import Ribbon from './Ribbon.js';
+import Typist                    from 'react-typist';
+import Ribbon                    from './Ribbon.js';
 
 import { ERC20, Wallet } from 'web3-yeet';
 
@@ -10,34 +10,38 @@ import logo from './logo.png';
 import 'react-toastify/dist/ReactToastify.css'
 import './App.css';
 
+const EventEmitter = require('events');
+
+
 class App extends Component {
-  constructor(props){
+  constructor(props) {
     super(props);
 
     this.state = {
       isAvailable: false,
-      isYou: false,
     };
 
-    try {
-      window.ethereum.enable();
-    } catch (e) {
-      console.log("No MetaMask detected.");
-    }
-
-    this.wallet = new Wallet();
-    this.token  = new ERC20('0x4f38f4229924bfa28d58eeda496cc85e8016bccc');
-    this.bag    = '0xff91c94f45e1114b1c90be6d028381964030584c';
+    this.wallet        = new Wallet();
+    this.token         = new ERC20('0x4f38f4229924bfa28d58eeda496cc85e8016bccc');
+    this.bag           = '0xff91c94f45e1114b1c90be6d028381964030584c';
+    
+    this.accountPoller = new Poller(1000);
+    this.accountPoller.onPoll(this.accountCheck);
+    this.accountPoller.poll();
   }
 
-  async componentDidMount(){
+  accountCheck = async () => {
     const isAvailable = await this.wallet.isAvailable();
     const name = await this.token.getSymbol();
+    const address = isAvailable
+      ? await this.wallet.getAddress()
+      : undefined; 
     
     this.setState({
-      name: name,
-      isAvailable: isAvailable,
-    });
+      name:         name,
+      isAvailable:  isAvailable,
+      address:      address,
+    }, () => this.accountPoller.poll());
   }
 
   sendCehh = () => {
@@ -80,12 +84,17 @@ class App extends Component {
   }
 
   render() {
+    const address = this.state.address
+      ? `${this.state.address.slice(0,12)}...`
+      : `No address!`;
     const statusColor = this.state.isAvailable
-    ? "#88BD38"
-    : "#D0312F";
-    const verifyText = !this.state.isYou 
-    ? {emoji: `🔍`, text: `Verify it was you`}
-    : {emoji: `🛂`, text: `Yep, it was you`};
+      ? "#88BD38"
+      : "#D0312F";
+    const verifyText = typeof this.state.isYou !== 'undefined'
+      ? !this.state.isYou 
+        ? {emoji: `🚫`, text: `Not you!`}
+        : {emoji: `🛂`, text: `Yep, it was you`}
+      : {emoji: `🔍`, text: `Verify it was you`};
 
     return (
       <div className="App">
@@ -109,6 +118,22 @@ class App extends Component {
               </span>
             </span>
           <span className="buttons">
+            <div key={this.state.address} className="mb-4 h6">
+              <a className="float-left">
+                <i className="fas fa-address-card"></i>
+                {" "}
+                <i className="fas fa-caret-right"></i>
+              </a>
+              <span>
+                  <Typist
+                    className="d-inline text-monospace"
+                    startDelay={1000}
+                    cursor={{hideWhenDone: true, hideWhenDoneDelay: 0, blink: true}}
+                  >
+                    {`${address}`}
+                  </Typist>
+              </span>
+            </div>
             <Button
               onClick={this.sendCehh}
               color="primary"
@@ -171,5 +196,20 @@ const ActionButton = (props) => (
     <span>{props.text}</span>
   </Button>
 );
+
+class Poller extends EventEmitter {
+    constructor(timeout = 1000) {
+        super();
+        this.timeout = timeout;
+    }
+
+    poll() {
+        setTimeout(() => this.emit('poll'), this.timeout);
+    }
+
+    onPoll(cb) {
+        this.on('poll', cb);
+    }
+}
 
 export default App;
