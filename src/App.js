@@ -31,17 +31,28 @@ class App extends Component {
   }
 
   accountCheck = async () => {
-    const isAvailable = await this.wallet.isAvailable();
-    const name = await this.token.getSymbol();
-    const address = isAvailable
-      ? await this.wallet.getAddress()
-      : undefined; 
-    
-    this.setState({
-      name:         name,
-      isAvailable:  isAvailable,
-      address:      address,
-    }, () => this.accountPoller.poll());
+    try {
+      const isAvailable = await this.wallet.isAvailable();
+      const name = await this.token.getSymbol();
+      const address = isAvailable
+        ? await this.wallet.getAddress()
+        : undefined; 
+      
+      this.setState({
+        name:         name,
+        isAvailable:  isAvailable,
+        address:      address,
+      }, () => this.accountPoller.poll());
+    } catch (e) {
+      await this.wallet.ledgerLogout();
+
+      this.setState({
+        ledgerAccess: false,
+        loadingLedger: false
+      });
+
+      this.accountPoller.poll();
+    }
   }
 
   sendCehh = () => {
@@ -82,6 +93,17 @@ class App extends Component {
     const isYou = await this.wallet.checkMessage("this message", this.state.signature);  
     this.setState({isYou: isYou});
   }
+  
+  accessLedger = async () => {
+    this.setState({loadingLedger: true}, async () => {
+      await this.wallet.setLedger().catch(e => {});  
+      
+      this.setState({
+        loadingLedger: false,
+        ledgerAccess: this.wallet.ledgerAccess
+      });
+    });
+  }
 
   render() {
     const address = this.state.address
@@ -95,6 +117,16 @@ class App extends Component {
         ? {emoji: `🚫`, text: `Not you!`}
         : {emoji: `🛂`, text: `Yep, it was you`}
       : {emoji: `🔍`, text: `Verify it was you`};
+    const ledgerText =
+      (typeof this.state.ledgerAccess !== 'undefined'
+      && typeof this.state.loadingLedger !== 'undefined'
+      && !this.state.loadingLedger)
+        ? !this.state.ledgerAccess
+          ? {emoji: `⚠`, text: `Ledger RIP retry?`}
+          : {emoji: `💡`, text: `WE GOT IT!!!`}
+        : !this.state.loadingLedger
+          ? {emoji: `🔌`, text: `Ledger wallet?`}
+          : {emoji: `⚙️`, text: `Loading...`}
 
     return (
       <div className="App">
@@ -165,6 +197,11 @@ class App extends Component {
               action={this.sendEth}
               emoji={`🍻`}
               text={`Send some ether?`}
+            />
+            <ActionButton
+              action={this.accessLedger}
+              emoji={ledgerText.emoji}
+              text={ledgerText.text}
             />
             <ActionButton
               action={this.sign}
