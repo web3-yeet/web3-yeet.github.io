@@ -44,7 +44,7 @@ button {
 
 .App-logo {
   animation: bounce infinite 1s ease-out;
-  height: 30vmin;
+  height: 25vmin;
 }
 
 .outer-logo {
@@ -52,6 +52,7 @@ button {
 }
 
 .App-header {
+  padding-top: 5vh;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
